@@ -68,14 +68,14 @@ public class CNPManagerAgent extends Agent{
 		System.out.println("STARTING ACCEPTING!--------------------, size: "+ taskMap.get(taskName).getProposalMessages().size());
 		if(taskMap.get(taskName).getProposalMessages().size() == 0) {
 			//Ako nema nijedan propose, saljemo opet call for proposal
-//			
-//			ACLMessage msgToSelf = new ACLMessage(Performative.REQUEST);
-//			msgToSelf.setSender(this.getId());
-//			msgToSelf.setContent(taskName);
-//			List<AID> receivers = new ArrayList<>();
-//			receivers.add(this.getId());
-//			msgToSelf.setReceivers(receivers);
-//			msm().post(msgToSelf);
+			
+			ACLMessage msgToSelf = new ACLMessage(Performative.REQUEST);
+			msgToSelf.setSender(this.getId());
+			msgToSelf.setContent(taskName);
+			List<AID> receivers = new ArrayList<>();
+			receivers.add(this.getId());
+			msgToSelf.setReceivers(receivers);
+			msm().post(msgToSelf);
 			taskMap.remove(taskName);
 		}else {
 			ACLMessage bestMsg = new ACLMessage();
