@@ -17,7 +17,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import agent_manager.AgentManager;
+import agent_manager.AgentManagerBean;
 import messagemanager.MessageManagerBean;
 import model.ACLMessage;
 import model.AID;
@@ -42,7 +42,7 @@ public class AgentBean {
 	WSEndPoint ws;
 	
 	@EJB
-	AgentManager am;
+	AgentManagerBean am;
 	
 	@EJB
 	NodeManager nm;
@@ -168,4 +168,32 @@ public class AgentBean {
 		return Response.status(400).entity(msg).build();
 	}
 	
+	@GET
+	@Path("/cnptest/{manager}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response cnpTest(@PathParam("manager") String manager) {
+		List<AID> runningAgents = am.getRunningAgents();
+		AID managerAgent = new AID();
+		boolean managerExists = false;
+		for(AID aid : runningAgents) {
+			if(aid.getType().getName().equals("CNPManagerAgent") && aid.getName().equals(manager)) {
+				managerAgent = aid;
+				managerExists = true;
+			}
+		}
+		
+		if(!managerExists) {
+			return Response.status(400).entity("There is no manager agent!").build();
+		}
+		
+		
+		ACLMessage msg = new ACLMessage(Performative.REQUEST);
+		List<AID> recs = new ArrayList<>();
+		recs.add(managerAgent);
+		msg.setReceivers(recs);
+		msg.setContent("task1");
+		msm.post(msg);
+		
+		return Response.status(400).entity(msg).build();
+	}
 }

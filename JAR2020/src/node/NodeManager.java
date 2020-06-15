@@ -9,7 +9,7 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.naming.NamingException;
 
-import agent_manager.AgentManager;
+import agent_manager.AgentManagerBean;
 import model.AgentCenter;
 
 @Startup
@@ -24,7 +24,7 @@ public class NodeManager {
 	private static String nodeIp = "localhost:8080";
 	
 	@EJB
-	AgentManager am;
+	AgentManagerBean am;
 
 	public NodeManager() {
 		nodes = new ArrayList<AgentCenter>();

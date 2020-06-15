@@ -8,7 +8,7 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 
-import agent_manager.AgentManager;
+import agent_manager.AgentManagerBean;
 import model.ACLMessage;
 import model.AID;
 import model.Agent;
@@ -20,7 +20,7 @@ import model.Agent;
 })
 public class MDBConsumer implements MessageListener {
 	@EJB
-	private AgentManager agm;
+	private AgentManagerBean agm;
 	
 	@Override
 	public void onMessage(Message msg) {
@@ -32,8 +32,6 @@ public class MDBConsumer implements MessageListener {
 			
 			//deliverMessage(acl,aid);
 			Agent agent = agm.getAgentReference(aid);
-			
-			System.out.println("MESSAGE : " + acl);
 			if(agent != null) {
 				agent.handleMessage(acl);
 			} else {
