@@ -53,7 +53,7 @@ public class CNPManagerAgent extends Agent{
 				try {
 					Context context = new InitialContext();
 					WSEndPoint ws = (WSEndPoint) context.lookup(WSEndPoint.LOOKUP);
-					ws.echoTextMessage("(Manager - " + getId().getName() + ") was REJECTED ("+ message.getUserArgs().get("evaluateAction") +" by (Responder - " + message.getSender().getName() + ").");
+					ws.echoTextMessage("(Manager - " + getId().getName() + ") was REJECTED ("+ message.getUserArgs().get("evaluateAction") +") by (Responder - " + message.getSender().getName() + ").");
 				} catch (NamingException e) {
 					e.printStackTrace();
 				}
@@ -94,10 +94,22 @@ public class CNPManagerAgent extends Agent{
 					Context context = new InitialContext();
 					WSEndPoint ws = (WSEndPoint) context.lookup(WSEndPoint.LOOKUP);
 					ws.echoTextMessage("(Manager - " + getId().getName() + ") was CANCELLED by (Responder - " + message.getSender().getName() + ") - task failure.");
+					ws.echoTextMessage("Retrying task.................");
 				} catch (NamingException e) {
 					e.printStackTrace();
 				}
 				System.out.println("(Manager - " + getId().getName() + ") was CANCELLED by (Responder - " + message.getSender().getName() + ") - task failure.");
+				
+				//Retry task
+				
+				ACLMessage msgToSelf = new ACLMessage(Performative.REQUEST);
+				msgToSelf.setSender(this.getId());
+				msgToSelf.setContent(message.getContent());
+				List<AID> receivers = new ArrayList<>();
+				receivers.add(this.getId());
+				msgToSelf.setReceivers(receivers);
+				msm().post(msgToSelf);
+				taskMap.remove(message.getContent());
 			}
 		}
 	}

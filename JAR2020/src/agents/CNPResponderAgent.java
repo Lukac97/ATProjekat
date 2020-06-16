@@ -24,6 +24,7 @@ public class CNPResponderAgent extends Agent{
 				ACLMessage msgToManager = message.makeReply(Performative.REJECT);
 				msgToManager.setSender(getId());
 				msgToManager.setContent(message.getContent());
+				msgToManager.getUserArgs().put("evaluateAction", ea);
 				msm().post(msgToManager);
 			}
 		}else if(message.getPerformative() == Performative.ACCEPT) {
