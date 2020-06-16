@@ -39,6 +39,8 @@
 					complete: function(data) {
 						console.log(data);
 						$("#chatTxt").append('<li>'+ "Return of method GET(./rest/agents/test): " + data.responseText+'</li>');
+						var elementChat = document.getElementById("chatDivAll");
+						elementChat.scrollTop = elementChat.scrollHeight;
 					}
 				});
 			});
@@ -57,6 +59,8 @@
 						var i;
 						for(i=0; i<list.length; i++){
 							$("#chatTxt").append('<li>'+ "_____________________ Name: " + list[i].name + "-- Type: " +list[i].type.name+'</li>');
+							var elementChat = document.getElementById("chatDivAll");
+							elementChat.scrollTop = elementChat.scrollHeight;
 						}
 					}
 				});
@@ -72,10 +76,13 @@
 					complete: function(data) {
 						console.log(data);
 						list = data.responseJSON;
+						var elementChat = document.getElementById("chatDivAll");
 						$("#chatTxt").append('<li>'+ "Return of method GET(./rest/agents/classes): " + '</li>');
+						elementChat.scrollTop = elementChat.scrollHeight;
 						var i;
 						for(i=0; i<list.length; i++){
 							$("#chatTxt").append('<li>'+ "_____________________ Type: " + list[i].name+'</li>');
+							elementChat.scrollTop = elementChat.scrollHeight;
 						}
 					}
 				});
@@ -92,11 +99,15 @@
 						console.log(data);
 						$("#chatTxt").append('<li>'+ "Added new Ping Agent : "+ data.responseJSON.name + '</li>');
 						$('#pingName').val("");
+						var elementChat = document.getElementById("chatDivAll");
+						elementChat.scrollTop = elementChat.scrollHeight;
 					},
 					error: function(data){
 						console.log(data);
 						$("#chatTxt").append('<li>'+ "Agent " + $('#pingName').val() + " already exists!"+'</li>');
 						$('#pingName').val("");
+						var elementChat = document.getElementById("chatDivAll");
+						elementChat.scrollTop = elementChat.scrollHeight;
 					}
 				});
 			});
@@ -112,11 +123,15 @@
 						console.log(data);
 						$("#chatTxt").append('<li>'+ "Added new Pong Agent : "+ data.responseJSON.name + '</li>');
 						$('#pongName').val("");
+						var elementChat = document.getElementById("chatDivAll");
+						elementChat.scrollTop = elementChat.scrollHeight;
 					},
 					error: function(data){
 						console.log(data);
 						$("#chatTxt").append('<li>'+ "Agent " + $('#pongName').val() + " already exists!"+'</li>');
 						$('#pongName').val("");
+						var elementChat = document.getElementById("chatDivAll");
+						elementChat.scrollTop = elementChat.scrollHeight;
 					}
 				});
 			});
@@ -132,11 +147,15 @@
 						console.log(data);
 						$("#chatTxt").append('<li>'+ "Added new CNPManager Agent : "+ data.responseJSON.name + '</li>');
 						$('#managerName').val("");
+						var elementChat = document.getElementById("chatDivAll");
+						elementChat.scrollTop = elementChat.scrollHeight;
 					},
 					error: function(data){
 						console.log(data);
 						$("#chatTxt").append('<li>'+ "Agent " + $('#managerName').val() + " already exists!"+'</li>');
 						$('#managerName').val("");
+						var elementChat = document.getElementById("chatDivAll");
+						elementChat.scrollTop = elementChat.scrollHeight;
 					}
 				});
 			});
@@ -152,11 +171,15 @@
 						console.log(data);
 						$("#chatTxt").append('<li>'+ "Added new CNPResponder Agent : "+ data.responseJSON.name + '</li>');
 						$('#responderName').val("");
+						var elementChat = document.getElementById("chatDivAll");
+						elementChat.scrollTop = elementChat.scrollHeight;
 					},
 					error: function(data){
 						console.log(data);
 						$("#chatTxt").append('<li>'+ "Agent " + $('#responderName').val() + " already exists!"+'</li>');
 						$('#responderName').val("");
+						var elementChat = document.getElementById("chatDivAll");
+						elementChat.scrollTop = elementChat.scrollHeight;
 					}
 				});
 			});
@@ -174,6 +197,8 @@
 					error: function(data){
 						console.log(data);
 						$("#chatTxt").append('<li>'+ data.responseText+'</li>');
+						var elementChat = document.getElementById("chatDivAll");
+						elementChat.scrollTop = elementChat.scrollHeight;
 					}
 				});
 			});
@@ -188,10 +213,14 @@
 					complete: function(data) {
 						console.log(data);
 						$("#chatTxt").append('<li>'+ data.responseText+'</li>');
+						var elementChat = document.getElementById("chatDivAll");
+						elementChat.scrollTop = elementChat.scrollHeight;
 					},
 					error: function(data){
 						console.log(data);
 						$("#chatTxt").append('<li>'+ data.responseText+'</li>');
+						var elementChat = document.getElementById("chatDivAll");
+						elementChat.scrollTop = elementChat.scrollHeight;
 					}
 				});
 			});
