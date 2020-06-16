@@ -1,7 +1,11 @@
 package ws;
 
 import java.io.IOException;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -18,15 +22,13 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
-import com.google.gson.Gson;
-
-import model.SocketMessage;
-
 @Singleton
-@ServerEndpoint("/ws/{user}")
+@ServerEndpoint("/ws")
 @LocalBean
 public class WSEndPoint {
-
+	
+	public static String LOOKUP = "java:app/WAR2020/WSEndPoint!ws.WSEndPoint";
+	
 	static List<Session> sessions = new ArrayList<Session>();
 	static Map<String, List<Session>> userSessions = new HashMap<>();
     Set<String> registeredUsers = new HashSet<String>();
@@ -39,21 +41,17 @@ public class WSEndPoint {
 	}
 	
 	@OnMessage
-	public void echoTextMessage(Session session, String msg, boolean last) {
+	public void echoTextMessage(String msg) {
 		try {
-			if(session.isOpen()) {
-				for(Session s : sessions) {
-					if(!s.getId().equals(session.getId())) {
-						s.getBasicRemote().sendText(msg, last);
-					}
-				}
+			for(Session s : sessions) {
+				String pattern = "MM/dd/yyyy HH:mm:ss";
+				DateFormat df = new SimpleDateFormat(pattern);
+				Date today = Calendar.getInstance().getTime();
+				String todayAsString = df.format(today);
+				s.getBasicRemote().sendText(todayAsString + " --> " + msg);
 			}
 		}catch (IOException e) {
-			try {
-				session.close();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
+				e.printStackTrace();
 		}
 
  	}

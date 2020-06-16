@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.ejb.Stateful;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import model.ACLMessage;
 import model.AID;
@@ -12,6 +15,7 @@ import model.Agent;
 import model.AgentCenter;
 import model.AgentType;
 import model.Performative;
+import ws.WSEndPoint;
 
 @Stateful
 public class PingAgent extends Agent{
@@ -25,6 +29,13 @@ public class PingAgent extends Agent{
 			pongAid.setName(message.getContent());
 			pongAid.setType(new AgentType("PongAgent", "agents"));
 			
+			try {
+				Context context = new InitialContext();
+				WSEndPoint ws = (WSEndPoint) context.lookup(WSEndPoint.LOOKUP);
+				ws.echoTextMessage("PING RECEIVED MSG: " + message.getContent());
+			} catch (NamingException e) {
+				e.printStackTrace();
+			}
 			System.out.println("PING RECEIVED MSG: " + message.getContent());
 			
 			ACLMessage msgToPong = new ACLMessage(Performative.REQUEST);
@@ -34,6 +45,13 @@ public class PingAgent extends Agent{
 		} else if(message.getPerformative() == Performative.INFORM) {
 			ACLMessage msgFromPong = message;
 			HashMap<String, Serializable> args = new HashMap<>(msgFromPong.getUserArgs());
+			try {
+				Context context = new InitialContext();
+				WSEndPoint ws = (WSEndPoint) context.lookup(WSEndPoint.LOOKUP);
+				ws.echoTextMessage("Pong returned: " + msgFromPong.getUserArgs().get("pongCounter"));
+			} catch (NamingException e) {
+				e.printStackTrace();
+			}
 			System.out.println("Pong returned: " + msgFromPong.getUserArgs().get("pongCounter"));
 		}
 	}

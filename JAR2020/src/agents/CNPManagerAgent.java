@@ -4,11 +4,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import helper.CNPTaskInfo;
 import model.ACLMessage;
 import model.AID;
 import model.Agent;
 import model.Performative;
+import ws.WSEndPoint;
 
 public class CNPManagerAgent extends Agent{
 	
@@ -30,22 +35,41 @@ public class CNPManagerAgent extends Agent{
 				msgToResponders.setSender(this.getId());
 				msgToResponders.setContent(message.getContent());
 				taskMap.put(message.getContent(), new CNPTaskInfo());
-				System.out.println("Sending out calls...");
-				System.out.println("-------------*********-----------nr of agents: " + agm().getResponderAgents().size());
 				for(AID respAid : agm().getResponderAgents()){
 					taskMap.get(message.getContent()).incCallsSent();
 					msgToResponders.getReceivers().add(respAid);
+					try {
+						Context context = new InitialContext();
+						WSEndPoint ws = (WSEndPoint) context.lookup(WSEndPoint.LOOKUP);
+						ws.echoTextMessage("(Manager - " + getId().getName() + ") sent CALL_FOR_PROPOSAL to (Responder - " + respAid.getName() + "). calls sent: " + taskMap.get(message.getContent()).getCallsSent());
+					} catch (NamingException e) {
+						e.printStackTrace();
+					}
 					System.out.println("(Manager - " + getId().getName() + ") sent CALL_FOR_PROPOSAL to (Responder - " + respAid.getName() + "). calls sent: " + taskMap.get(message.getContent()).getCallsSent());
 				}
 				msm().post(msgToResponders);
 			}else if(message.getPerformative() == Performative.REJECT && taskExists) {
 				taskMap.get(message.getContent()).incProposalsReceived();
+				try {
+					Context context = new InitialContext();
+					WSEndPoint ws = (WSEndPoint) context.lookup(WSEndPoint.LOOKUP);
+					ws.echoTextMessage("(Manager - " + getId().getName() + ") was REJECTED ("+ message.getUserArgs().get("evaluateAction") +" by (Responder - " + message.getSender().getName() + ").");
+				} catch (NamingException e) {
+					e.printStackTrace();
+				}
 				System.out.println("(Manager - " + getId().getName() + ") was REJECTED by (Responder - " + message.getSender().getName() + ").");
 
 				if(taskMap.get(message.getContent()).getCallsSent() == taskMap.get(message.getContent()).getProposalsReceived()) {
 					acceptBestProposal(message.getContent());
 				}
 			}else if(message.getPerformative() == Performative.PROPOSE && taskExists) {
+				try {
+					Context context = new InitialContext();
+					WSEndPoint ws = (WSEndPoint) context.lookup(WSEndPoint.LOOKUP);
+					ws.echoTextMessage("(Manager - " + getId().getName() + ") was PROPOSED ("+ message.getUserArgs().get("evaluateAction") +") by (Responder - " + message.getSender().getName() + ").");
+				} catch (NamingException e) {
+					e.printStackTrace();
+				}
 				System.out.println("(Manager - " + getId().getName() + ") was PROPOSED by (Responder - " + message.getSender().getName() + ").");
 
 				taskMap.get(message.getContent()).incProposalsReceived();
@@ -56,16 +80,29 @@ public class CNPManagerAgent extends Agent{
 				}
 			}else if(message.getPerformative() == Performative.INFORM && taskExists) {
 				taskMap.remove(message.getContent());
+				try {
+					Context context = new InitialContext();
+					WSEndPoint ws = (WSEndPoint) context.lookup(WSEndPoint.LOOKUP);
+					ws.echoTextMessage("(Manager - " + getId().getName() + ") was INFORMED by (Responder - " + message.getSender().getName() + ") about task completion.");
+				} catch (NamingException e) {
+					e.printStackTrace();
+				}
 				System.out.println("(Manager - " + getId().getName() + ") was INFORMED by (Responder - " + message.getSender().getName() + ") about task completion.");
 			} else if(message.getPerformative() == Performative.CANCEL && taskExists) {
 				taskMap.remove(message.getContent());
+				try {
+					Context context = new InitialContext();
+					WSEndPoint ws = (WSEndPoint) context.lookup(WSEndPoint.LOOKUP);
+					ws.echoTextMessage("(Manager - " + getId().getName() + ") was CANCELLED by (Responder - " + message.getSender().getName() + ") - task failure.");
+				} catch (NamingException e) {
+					e.printStackTrace();
+				}
 				System.out.println("(Manager - " + getId().getName() + ") was CANCELLED by (Responder - " + message.getSender().getName() + ") - task failure.");
 			}
 		}
 	}
 	
 	public void acceptBestProposal(String taskName) {
-		System.out.println("STARTING ACCEPTING!--------------------, size: "+ taskMap.get(taskName).getProposalMessages().size());
 		if(taskMap.get(taskName).getProposalMessages().size() == 0) {
 			//Ako nema nijedan propose, saljemo opet call for proposal
 			
@@ -86,7 +123,6 @@ public class CNPManagerAgent extends Agent{
 					startInd = 0;
 					bestMsg = msg;
 				}
-				System.out.println("COMPARE:   "+msg.getSender().getName()+ " = " + (int)msg.getUserArgs().get("evaluateAction"));
 				if((int)msg.getUserArgs().get("evaluateAction") > (int)bestMsg.getUserArgs().get("evaluateAction")) {
 					bestMsg = msg;
 				}

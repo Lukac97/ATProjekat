@@ -3,10 +3,252 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<script src = "jquery-1.11.0.js"></script>
+<script>
+		var socket;
+		var host = "ws://localhost:8080/WAR2020/ws";
+		
+		socket = new WebSocket(host);
+		console.log('connect: Socket Status: ' +socket.readyState);
+		
+		socket.onopen = function(){
+			console.log('onopen: Socket Status: ' +socket.readyState +' (open)');
+			
+		}
+		
+		socket.onmessage = function(msg){
+				console.log('onmessage: Received: ' +msg.data);
+				$("#chatTxt").append('<li>'+msg.data+'</li>');
+				var elementChat = document.getElementById("chatDivAll");
+				elementChat.scrollTop = elementChat.scrollHeight;
+		}
+		
+		socket.onclose = function(){
+			socket.null;
+		}
+		
+		
+		$(document).ready(function() {
+			$("#btnTest").click(function() {
+				$.ajax({
+					url: "rest/agents/test",
+					type: "GET",
+					data: {},
+					contentType: "application/json",
+					dataType: "json",
+					complete: function(data) {
+						console.log(data);
+						$("#chatTxt").append('<li>'+ "Return of method GET(./rest/agents/test): " + data.responseText+'</li>');
+					}
+				});
+			});
+			
+			$("#btnRunning").click(function() {
+				$.ajax({
+					url: "rest/agents/running",
+					type: "GET",
+					data: {},
+					contentType: "application/json",
+					dataType: "json",
+					complete: function(data) {
+						console.log(data);
+						list = data.responseJSON;
+						$("#chatTxt").append('<li>'+ "Return of method GET(./rest/agents/running): " + '</li>');
+						var i;
+						for(i=0; i<list.length; i++){
+							$("#chatTxt").append('<li>'+ "_____________________ Name: " + list[i].name + "-- Type: " +list[i].type.name+'</li>');
+						}
+					}
+				});
+			});
+			
+			$("#btnClasses").click(function() {
+				$.ajax({
+					url: "rest/agents/classes",
+					type: "GET",
+					data: {},
+					contentType: "application/json",
+					dataType: "json",
+					complete: function(data) {
+						console.log(data);
+						list = data.responseJSON;
+						$("#chatTxt").append('<li>'+ "Return of method GET(./rest/agents/classes): " + '</li>');
+						var i;
+						for(i=0; i<list.length; i++){
+							$("#chatTxt").append('<li>'+ "_____________________ Type: " + list[i].name+'</li>');
+						}
+					}
+				});
+			});
+			
+			$("#btnPingAgent").click(function() {
+				$.ajax({
+					url: "rest/agents/running/PingAgent/" + $('#pingName').val(),
+					type: "PUT",
+					data: {},
+					contentType: "application/json",
+					dataType: "json",
+					complete: function(data) {
+						console.log(data);
+						$("#chatTxt").append('<li>'+ "Added new Ping Agent : "+ data.responseJSON.name + '</li>');
+						$('#pingName').val("");
+					},
+					error: function(data){
+						console.log(data);
+						$("#chatTxt").append('<li>'+ "Agent " + $('#pingName').val() + " already exists!"+'</li>');
+						$('#pingName').val("");
+					}
+				});
+			});
+			
+			$("#btnPongAgent").click(function() {
+				$.ajax({
+					url: "rest/agents/running/PongAgent/" + $('#pongName').val(),
+					type: "PUT",
+					data: {},
+					contentType: "application/json",
+					dataType: "json",
+					complete: function(data) {
+						console.log(data);
+						$("#chatTxt").append('<li>'+ "Added new Pong Agent : "+ data.responseJSON.name + '</li>');
+						$('#pongName').val("");
+					},
+					error: function(data){
+						console.log(data);
+						$("#chatTxt").append('<li>'+ "Agent " + $('#pongName').val() + " already exists!"+'</li>');
+						$('#pongName').val("");
+					}
+				});
+			});
+			
+			$("#btnManagerAgent").click(function() {
+				$.ajax({
+					url: "rest/agents/running/CNPManagerAgent/" + $('#managerName').val(),
+					type: "PUT",
+					data: {},
+					contentType: "application/json",
+					dataType: "json",
+					complete: function(data) {
+						console.log(data);
+						$("#chatTxt").append('<li>'+ "Added new CNPManager Agent : "+ data.responseJSON.name + '</li>');
+						$('#managerName').val("");
+					},
+					error: function(data){
+						console.log(data);
+						$("#chatTxt").append('<li>'+ "Agent " + $('#managerName').val() + " already exists!"+'</li>');
+						$('#managerName').val("");
+					}
+				});
+			});
+			
+			$("#btnResponderAgent").click(function() {
+				$.ajax({
+					url: "rest/agents/running/CNPResponderAgent/" + $('#responderName').val(),
+					type: "PUT",
+					data: {},
+					contentType: "application/json",
+					dataType: "json",
+					complete: function(data) {
+						console.log(data);
+						$("#chatTxt").append('<li>'+ "Added new CNPResponder Agent : "+ data.responseJSON.name + '</li>');
+						$('#responderName').val("");
+					},
+					error: function(data){
+						console.log(data);
+						$("#chatTxt").append('<li>'+ "Agent " + $('#responderName').val() + " already exists!"+'</li>');
+						$('#responderName').val("");
+					}
+				});
+			});
+			
+			$("#btnPingPong").click(function() {
+				$.ajax({
+					url: "rest/agents/pingpong",
+					type: "GET",
+					data: {},
+					contentType: "application/json",
+					dataType: "json",
+					complete: function(data) {
+						console.log(data);
+					},
+					error: function(data){
+						console.log(data);
+						$("#chatTxt").append('<li>'+ data.responseText+'</li>');
+					}
+				});
+			});
+			
+			$("#btnCNP").click(function() {
+				$.ajax({
+					url: "rest/agents/cnptest/" + $('#cnpName').val(),
+					type: "GET",
+					data: {},
+					contentType: "application/json",
+					dataType: "json",
+					complete: function(data) {
+						console.log(data);
+						$("#chatTxt").append('<li>'+ data.responseText+'</li>');
+					},
+					error: function(data){
+						console.log(data);
+						$("#chatTxt").append('<li>'+ data.responseText+'</li>');
+					}
+				});
+			});
+		});
+
+</script>
 </head>
 <body>
-Helloooo
-<br />
-<a href="rest/chat/test">Test</a>
+<h1 style="text-align: center">Welcome</h1>
+<div style="display:table; padding: 5px;margin:50px 50px 50px 50px; border-style:solid; border-width:1px; border-radius:10px; border-color:black">
+	<div style="display:table-row">
+		<button style="display:table-cell; margin-right:10px" type="button" id="btnTest">Test</button>
+		<button style="display:table-cell; margin-right:10px" type="button" id="btnRunning">Get running agents</button>
+		<button style="display:table-cell" type="button" id="btnClasses">Classes</button>
+	</div>
+</div>
+
+<div style="display:table; padding: 5px;margin:50px 50px 50px 50px; border-style:solid; border-width:1px; border-radius:10px; border-color:black">
+	<div style="display:table-row">
+		<p style="display:table-cell; margin-right:5px">New PingAgent:</p>
+		<input style="display:table-cell; margin-right:10px" type="text" id="pingName" name="pingName">
+		<button style="display:table-cell" type="button" id="btnPingAgent">Create</button>
+	</div>
+	<div style="display:table-row">
+		<p style="display:table-cell; margin-right:5px">New PongAgent:</p>
+		<input style="display:table-cell; margin-right:10px" type="text" id="pongName" name="pongName">
+		<button style="display:table-cell" type="button" id="btnPongAgent">Create</button>
+	</div>
+	<div style="display:table-row">
+		<p style="display:table-cell; margin-right:5px">New CNPManagerAgent:</p>
+		<input style="display:table-cell; margin-right:10px" type="text" id="managerName" name="managerName">
+		<button style="display:table-cell" type="button" id="btnManagerAgent">Create</button>
+	</div>
+	<div style="display:table-row">
+		<p style="display:table-cell; margin-right:5px">New CNPResponderAgent:</p>
+		<input style="display:table-cell; margin-right:10px" type="text" id="responderName" name="responderName">
+		<button style="display:table-cell" type="button" id="btnResponderAgent">Create</button>
+	</div>
+</div>
+
+<div style="display:table; padding: 5px;margin:50px 50px 50px 50px; border-style:solid; border-width:1px; border-radius:10px; border-color:black">
+	<div style="display:table-row">
+		<button style="display:table-cell; margin-right:10px" type="button" id="btnPingPong">Test Ping-Pong</button>
+	</div>
+	<div style="display:table-row">
+		<input style="display:table-cell; margin-right:5px;" type="text" id="cnpName" name="cnpName"/>
+		<button style="display:table-cell" type="button" id="btnCNP">Test CNP</button>
+	</div>
+</div>
+
+<div style="margin: 50px 50px 50px 50px; height:300px;">
+	<div id="chatDivAll" style="overflow:auto;border-style:solid; border-width:1px; border-radius:10px; border-color: black; height: 100%; width:100%">	
+						
+		<ul id="chatTxt" style="list-style-type:none">
+		
+		</ul>
+	</div>
+</div>
 </body>
 </html>

@@ -165,7 +165,7 @@ public class AgentBean {
 		msg.setContent("pong");
 		msm.post(msg);
 		
-		return Response.status(400).entity(msg).build();
+		return Response.status(200).entity("Ping sent successfully!").build();
 	}
 	
 	@GET
@@ -194,6 +194,6 @@ public class AgentBean {
 		msg.setContent("task1");
 		msm.post(msg);
 		
-		return Response.status(400).entity(msg).build();
+		return Response.status(200).entity("CNP task sent successfully!").build();
 	}
 }
