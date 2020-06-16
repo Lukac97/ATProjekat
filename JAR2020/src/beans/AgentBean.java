@@ -54,11 +54,11 @@ public class AgentBean {
 	@Path("/test")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String test() {
-		System.out.println("--------------------");
+		System.out.println("----------test----------");
 			for(AgentType at : am.getAgentTypes()) {
 				System.out.println(at.getName());
 			}
-		System.out.println("--------------------");
+		System.out.println("---------endtest-----------");
 		return "OK";
 	}
 	
